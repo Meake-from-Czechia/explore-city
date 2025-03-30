@@ -23,7 +23,7 @@ $ sudo docker-compose up --build [-d]
   ``
 - ???
 - Profit
-- Swagger running at `hostname:3443/api`
+- Swagger running at `hostname:3443/swagger`
 - Api running at `hostname:3443/`
 
 ## Live
