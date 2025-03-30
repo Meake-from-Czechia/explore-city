@@ -23,8 +23,8 @@ $ sudo docker-compose up --build [-d]
   ``
 - ???
 - Profit
-- Swagger running at `hostname:3433/api`
-- Api running at `hostname:3433/`
+- Swagger running at `hostname:3443/api`
+- Api running at `hostname:3443/`
 
 ## Live
-- Currently live at https://meake.cz:3433/api
+- Currently live at https://meake.cz:3443/swagger
