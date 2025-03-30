@@ -56,3 +56,7 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 /certs/server.crt
 /certs/server.key
+/.prettierrc
+/test/app.e2e-spec.ts
+/eslint.config.mjs
+/test/jest-e2e.json
