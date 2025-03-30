@@ -1,0 +1,30 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { City } from '../city/city.entity';
+
+
+@Module({
+    imports: [
+        ConfigModule.forRoot(),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) => ({
+                type: 'mssql',
+                host: 'localhost',
+                port: 1443,
+                username: configService.get<string>('DB_USER'),
+                password: configService.get<string>('DB_PASSWORD'),
+                database: configService.get<string>('DB_DATABASE'),
+                entities: [City],
+                synchronize: true,
+            }),
+            inject: [ConfigService],
+        }),
+    ],
+
+    controllers: [],
+    providers: [],
+})
+export class AppModule {
+}
