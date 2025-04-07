@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { RatingService } from './rating.service';
-import { Rating } from './rating.entity';
+import { RatingAvgDto } from './rating.avgDto';
+import { RatingCreateDto } from './rating.createDto';
 
-@Controller('rating')
+@Controller()
 export class RatingsController{
     constructor(private readonly ratingService: RatingService){}
-    @Get()
-    getRatings(): Promise<Rating[]>{
-        return this.ratingService.getRatings();
+    @Get('/place/:id/ratings')
+    async getAverageRatingByPlaceId(@Param('id') id: number): Promise<RatingAvgDto>{
+        return await this.ratingService.getAverageRatingByPlaceId(id);
     }
+
+    @Post('/place/:id/rating')
+    async createRatingOnPlaceId(@Param('id') id: number,@Body() ratingCreateDto: RatingCreateDto): Promise<void>{
+        return await this.ratingService.createRatingOnPlaceId(id, ratingCreateDto);
+    }
+
 }

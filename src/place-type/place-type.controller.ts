@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { PlaceTypeService } from './place-type.service';
 import { PlaceType } from './place-type.entity';
 
-@Controller('types')
+@Controller()
 export class PlaceTypesController{
     constructor(private readonly placeTypeService: PlaceTypeService){}
-    @Get()
-    getPlaces(): Promise<PlaceType[]>{
-        return this.placeTypeService.getPlaceTypes();
+
+    @Get('/types')
+    async getPlaces(): Promise<PlaceType[]>{
+        return await this.placeTypeService.getPlaceTypes();
+    }
+
+    @Get('/type/:id')
+    async getPlace(@Param('id') id: number): Promise<PlaceType> {
+        return await this.placeTypeService.getPlaceTypeById(id);
     }
 }

@@ -13,13 +13,9 @@ export class CommentService {
       @InjectRepository(Place)
       private readonly placeRepository: Repository<Place>
     ) {}
-    async getComments(): Promise<Comment[]> {
-        return this.commentRepository.find({
-            relations: ['place'],
-        });
-    }
 
-    getCommentsByPlaceId(id: number) {
+    async getCommentsByPlaceId(id: number) {
+        if (!await this.placeRepository.findOneBy({id:id})) throw new NotFoundException(`Place with id "${id}" not found.`)
         return this.commentRepository.find({
             where: {
                 place:{
@@ -29,9 +25,15 @@ export class CommentService {
         })
     }
 
-    async createComment(placeId: number, commentDto: CommentCreateDto) {
+    async createCommentOnPlaceId(placeId: number, commentDto: CommentCreateDto) {
         const place = await this.placeRepository.findOneBy({id: placeId});
         if (!place) throw new NotFoundException(`Place with id ${placeId} not found`);
         return await this.commentRepository.save(new Comment(commentDto.name, commentDto.text, place))
+    }
+
+    async deleteCommentById(id: number): Promise<void> {
+        if (!await this.commentRepository.findOneBy({id:id})) throw new NotFoundException(`Comment with id "${id}" not found.`)
+        await this.commentRepository.delete(id);
+        return;
     }
 }

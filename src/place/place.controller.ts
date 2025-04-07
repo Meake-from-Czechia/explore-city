@@ -1,46 +1,36 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { PlaceService } from './place.service';
+
 import { Place } from './place.entity';
-import { Comment } from '../comment/comment.entity';
-import { CommentService } from '../comment/comment.service';
-import { CommentCreateDto } from '../comment/comment.createDto';
-import { Rating } from '../rating/rating.entity';
-import { RatingService } from '../rating/rating.service';
-import { RatingCreateDto } from '../rating/rating.createDto';
+import { PlaceCreateDto } from './place.createDto';
+import { PlaceEditDto } from './place.editDto';
 
-@Controller('place')
+
+@Controller()
 export class PlacesController {
-    constructor(private readonly placeService: PlaceService,
-                private readonly commentService: CommentService,
-                private readonly ratingService: RatingService) {
+    constructor(private readonly placeService: PlaceService) {
     }
 
-    @Get()
-    getPlaces(): Promise<Place[]> {
-        return this.placeService.getPlaces();
+    @Get('/city/:id/places')
+    async getPlacesByCityId(@Param('id') id: number): Promise<Place[]> {
+        return await this.placeService.getPlacesByCityId(id);
     }
 
-    @Get(':id')
-    getPlaceById(@Param('id') id: number) : Promise<Place> {
-        return this.placeService.getPlaceById(id);
-    }
 
-    @Get(':id/comments')
-    getCommentsByPlaceId(@Param('id') id: number): Promise<Comment[]> {
-        return this.commentService.getCommentsByPlaceId(id);
+    @Get('/place/:id')
+    async getPlaceById(@Param('id') id: number): Promise<Place> {
+        return await this.placeService.getPlaceById(id);
     }
-
-    @Post(':id/comments')
-    createCommentByPlaceId(@Param('id') id: number, @Body() commentDto: CommentCreateDto): Promise<Comment> {
-        return this.commentService.createComment(id, commentDto);
+    @Post('/city/:id/place')
+    async createPlaceOnCityId(@Param('id') id: number, @Body() placeCreateDto: PlaceCreateDto) {
+        return await this.placeService.createPlaceOnCityId(id, placeCreateDto);
     }
-
-    @Get(':id/rating')
-    getRatingsByPlaceId(@Param('id') id: number) : Promise<Rating[]> {
-        return this.ratingService.getRatingsByPlaceId(id);
+    @Delete('/place/:id')
+    async deletePlaceById(@Param('id') id: number): Promise<void> {
+        return await this.placeService.deletePlaceById(id);
     }
-    @Post(':id/rating')
-    createRatingByPlaceId(@Param('id') id: number, @Body() ratingDto: RatingCreateDto): Promise<Rating> {
-        return this.ratingService.createRating(id, ratingDto);
+    @Put('/place/:id')
+    async editPlaceById(@Param('id') id: number, @Body() placeEditDto: PlaceEditDto): Promise<void>{
+        return await this.placeService.editPlaceById(id,  placeEditDto);
     }
 }

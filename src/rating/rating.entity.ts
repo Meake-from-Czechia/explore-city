@@ -5,7 +5,7 @@ import { Place } from '../place/place.entity';
 @Entity()
 export class Rating {
     @PrimaryGeneratedColumn() id: number;
-    @ManyToOne(() => Place, (place) => place.ratings, { cascade: ['insert', 'update'] })
+    @ManyToOne(() => Place, (place) => place.ratings, {onDelete: 'CASCADE'})
         place: Place;
     @Column() rating: number;
 

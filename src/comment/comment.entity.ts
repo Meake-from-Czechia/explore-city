@@ -2,10 +2,11 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn } f
 import { Place } from '../place/place.entity';
 
 
+
 @Entity()
 export class Comment {
     @PrimaryGeneratedColumn() id: number;
-    @ManyToOne(() => Place, (place) => place.comments, { cascade: ['insert', 'update'] })
+    @ManyToOne(() => Place, (place) => place.comments, { onDelete: 'CASCADE'})
         place: Place;
     @Column() name: string;
     @Column({ type: 'nvarchar', length: 'max' }) text: string;

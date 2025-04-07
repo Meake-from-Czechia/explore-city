@@ -18,8 +18,8 @@ services:
       - SSL_KEY_PATH=/app/certs/server.key
       - SSL_CERT_PATH=/app/certs/server.crt
     ports:
-      - "3000:3000"  # HTTP port
-      - "3443:3443"  # HTTPS port
+#      - "80:3000"  # HTTP port
+      - "443:3443"  # HTTPS port
     volumes:
       - ./src:/app/src  # For hot-reload during development
       - ./certs:/app/certs  # Mount SSL certificates from host

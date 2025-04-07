@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RatingCreateDto {
-    @ApiProperty()
+    @ApiProperty({ example: 5})
     rating: number;
 }
