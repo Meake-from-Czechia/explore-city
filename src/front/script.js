@@ -1,5 +1,5 @@
 // API Base URL - Replace with your actual API base URL
-const API_BASE_URL = 'https://meake.cz'; // Example, adjust as needed
+const API_BASE_URL = 'https://meake.cz/api'; // Example, adjust as needed
 
 // State management
 let cities = [];

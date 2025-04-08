@@ -23,6 +23,7 @@ async function bootstrap() {
 
     // Determine which port to use
     const port = httpsOptions ? 3443 : 3000;
+    app.enableCors();
     await app.listen(port);
 
     console.log(`Application running on ${httpsOptions ? 'https' : 'http'}://localhost:${port}`);

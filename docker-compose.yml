@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   # NestJS API service with SSL
   api:
@@ -9,20 +8,34 @@ services:
     container_name: nestjs-api
     environment:
       - NODE_ENV=development
-      - DATABASE_HOST=host.docker.internal  # Special DNS name to reach the host machine
+      - DATABASE_HOST=host.docker.internal
       - DATABASE_PORT=${DB_PORT}
       - DATABASE_USER=${DB_USER}
       - DATABASE_PASSWORD=${DB_PASSWORD}
-      - DATABASE_NAME=${DB_DATABASE}  # Customize this to your database name
-      # SSL Environment Variables
+      - DATABASE_NAME=${DB_DATABASE}
       - SSL_KEY_PATH=/app/certs/server.key
       - SSL_CERT_PATH=/app/certs/server.crt
-    ports:
-#      - "80:3000"  # HTTP port
-      - "443:3443"  # HTTPS port
+    # No need to expose ports to the host since nginx will proxy
+    expose:
+      - "3443"
     volumes:
-      - ./src:/app/src  # For hot-reload during development
-      - ./certs:/app/certs  # Mount SSL certificates from host
+      - ./src:/app/src
+      - ./certs:/app/certs
     restart: unless-stopped
     extra_hosts:
-      - "host.docker.internal:host-gateway"  # Required for Docker Linux
+      - "host.docker.internal:host-gateway"
+
+  # Nginx service for static files and API proxy
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./src/front:/usr/share/nginx/html
+      - ./certs:/etc/nginx/certs
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+    restart: unless-stopped
