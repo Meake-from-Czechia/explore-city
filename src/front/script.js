@@ -160,7 +160,7 @@ async function loadPlaceDetails(placeId) {
 async function loadPlaceRatings(placeId) {
     const data = await fetchData(`/place/${placeId}/ratings`);
     if (data) {
-        renderRating(data.average, data.count);
+        renderRating(data.averageRating, data.ratingsCount);
     }
 }
 
@@ -234,7 +234,7 @@ function renderCities() {
         cityCard.className = 'col-md-4 mb-3';
         cityCard.innerHTML = `
             <div class="city-card" data-city-id="${city.id}">
-                <div class="placeholder-image"></div>
+                <div class="placeholder-image" style="background-image: url('safr.jpg');"></div>
                 <h3 class="city-name">${city.name}</h3>
             </div>
         `;
@@ -255,13 +255,13 @@ function renderPlaces(places) {
     placesContainer.innerHTML = '';
 
     places.forEach(place => {
-        const placeType = placeTypes.find(t => t.id === place.typeId) || { name: 'Neznámý' };
+        const placeType = placeTypes.find(t => t.id === place.placeType.id) || { name: 'Neznámý' };
 
         const placeCard = document.createElement('div');
         placeCard.className = 'col-md-4 col-lg-3 mb-3';
         placeCard.innerHTML = `
             <div class="place-card" data-place-id="${place.id}">
-                <div class="placeholder-image"></div>
+                <div class="placeholder-image" style="background-image: url('pel.jpg');"></div>
                 <h4 class="place-name">${place.name}</h4>
                 <p class="place-type">${placeType.name}</p>
             </div>
@@ -280,7 +280,7 @@ function renderPlaces(places) {
 }
 
 function renderPlaceDetails(place) {
-    const placeType = placeTypes.find(t => t.id === place.typeId) || { name: 'Neznámý' };
+    const placeType = placeTypes.find(t => t.id === place.placeType.id) || { name: 'Neznámý' };
 
     placeNameElement.textContent = place.name;
     placeDescriptionElement.textContent = place.description;
