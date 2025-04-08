@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExploreCity - prozkoumej svět</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container mt-4">
+    <!-- Header -->
+    <header class="mb-4">
+        <h1>ExploreCity</h1>
+        <p class="text-muted small">...prozkoumej svět</p>
+    </header>
+
+    <!-- Main cities section -->
+    <div class="row cities-container mb-5" id="cities-container">
+        <!-- Cities will be loaded here dynamically -->
+    </div>
+
+    <!-- City details section (hidden by default) -->
+    <div id="city-detail" class="mb-5" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 id="selected-city-name">Praha</h2>
+            <a href="#" class="text-decoration-none" id="new-place-link">nové místo</a>
+        </div>
+
+        <div class="row" id="places-container">
+            <!-- Places will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Place details section (hidden by default) -->
+    <div id="place-detail" class="row" style="display: none;">
+        <div class="col-md-8">
+            <!-- City navigation bar -->
+            <div class="mb-4">
+                <a href="#" id="back-to-city" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Zpět na <span id="back-city-name"></span>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Right side with place details -->
+            <div class="place-details p-3 border">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 id="place-name">Místo</h3>
+                    <div>
+                        <a href="#" class="edit-icon"><i class="bi bi-pencil"></i></a>
+                        <a href="#" class="delete-icon ms-2"><i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+
+                <div class="rating mb-2">
+                    <div id="rating-stars" class="rating-input">
+                        <i class="bi bi-star" data-rating="1"></i>
+                        <i class="bi bi-star" data-rating="2"></i>
+                        <i class="bi bi-star" data-rating="3"></i>
+                        <i class="bi bi-star" data-rating="4"></i>
+                        <i class="bi bi-star" data-rating="5"></i>
+                    </div>
+                    <span id="rating-count" class="text-muted small"></span>
+                </div>
+
+                <div class="place-image placeholder-image mb-3"></div>
+
+                <div id="place-description" class="mb-4">
+                    <!-- Place description will be inserted here -->
+                </div>
+
+                <div id="place-address" class="mb-4">
+                    <strong>Adresa:</strong> <span id="address-text"></span>
+                </div>
+
+                <div id="comments-section" class="mb-4">
+                    <h5>Komentáře</h5>
+                    <div id="comments-list">
+                        <!-- Comments will be inserted here -->
+                    </div>
+                </div>
+
+                <div id="new-comment-form">
+                    <h5>Nový komentář</h5>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="comment-name" placeholder="Jméno">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" id="comment-text" rows="3" placeholder="Text komentáře"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="submit-comment">Odeslat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Place Edit Modal -->
+    <div class="modal fade" id="editPlaceModal" tabindex="-1" aria-labelledby="editPlaceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPlaceModalLabel">Upravit místo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-place-form">
+                        <div class="mb-3">
+                            <label for="edit-place-name" class="form-label">Název</label>
+                            <input type="text" class="form-control" id="edit-place-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-place-type" class="form-label">Typ</label>
+                            <select class="form-control" id="edit-place-type" required>
+                                <!-- Types will be loaded dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-place-description" class="form-label">Popis</label>
+                            <textarea class="form-control" id="edit-place-description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-place-address" class="form-label">Adresa</label>
+                            <input type="text" class="form-control" id="edit-place-address" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zrušit</button>
+                    <button type="button" class="btn btn-primary" id="save-place-edits">Uložit změny</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Place Modal -->
+    <div class="modal fade" id="newPlaceModal" tabindex="-1" aria-labelledby="newPlaceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newPlaceModalLabel">Nové místo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="new-place-form">
+                        <div class="mb-3">
+                            <label for="new-place-name" class="form-label">Název</label>
+                            <input type="text" class="form-control" id="new-place-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-place-type" class="form-label">Typ</label>
+                            <select class="form-control" id="new-place-type" required>
+                                <!-- Types will be loaded dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-place-description" class="form-label">Popis</label>
+                            <textarea class="form-control" id="new-place-description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-place-address" class="form-label">Adresa</label>
+                            <input type="text" class="form-control" id="new-place-address" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zrušit</button>
+                    <button type="button" class="btn btn-primary" id="save-new-place">Vytvořit místo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Potvrdit smazání</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="delete-confirm-text">Opravdu chcete smazat tuto položku?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zrušit</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete">Smazat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
